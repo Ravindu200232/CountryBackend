@@ -1,53 +1,26 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
+const userShema = new mongoose.Schema({
 
-    firstName : {
-        type : String,
-        required : true,
-    },
-    lastName : {
-        type : String,
-        required : true,
-    },
     email : {
         type : String,
         required : true,
-        unique : true,
+        unique : true
     },
     password : {
-        type : String,
-        required : true,
-    },
-    address :{
         type : String,
         required : true
     },
     role : {
         type : String,
-        enum : ['customer','restaurant','delivery','admin'],
-        default : 'customer',
         required : true,
+        default : "customer"
     },
-    phone : {
+    username : {
         type : String,
-        required : true,
+        required : true
     },
-    createdAt : {
-        type : Date,
-        default : Date.now,
-    }
-    ,
-    isVerified : {
-        type : Boolean,
-        default : false,
-        required : true,
-    },
-    isBlock : {
-        type : Boolean,
-        default : false,
-        required : true,
-    },
+   
     image : {
         type : String,
         required : true,
@@ -58,18 +31,9 @@ const userSchema = new mongoose.Schema({
         required : true,
         default : false
     },
-lat: {
-    type: Number,
-    required:false
-},
-lng: {
-    type: Number,
-    required:false
-   
-},
 
+    
 })
 
-const User = mongoose.model('User',userSchema)
-
+const User = mongoose.model("user",userShema);
 export default User;
