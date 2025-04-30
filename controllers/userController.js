@@ -234,29 +234,33 @@ export async function changePassword(req, res) {
 }
 
 export async function loginWithGoogle(req, res) {
+
   const accessToken = req.body.accessToken;
 
+  console.log("hi")
+
   try {
-    const response = await axios.get(
-      "https://www.googleapis.com/oauth2/v3/userinfo",
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    
+    const response = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    console.log(response)
+
 
     console.log(response.data);
     const user = await User.findOne({
-      email: response.data.email,
+      email : response.data.email,
     });
-    if (user != null) {
+    if(user!=null){
       const token = jwt.sign(
         {
           username: user.username,
           email: user.email,
           role: user.role,
           image: user.image,
+          phone: user.phone,
         },
         process.env.SEKRET_KEY
       );
@@ -265,13 +269,15 @@ export async function loginWithGoogle(req, res) {
         token: token,
         user: user,
       });
-    } else {
+
+    }else{
       const newUser = new User({
-        email: response.data.email,
-        password: "123",
-        role: "customer",
-        image: response.data.picture,
-        emailVerified: true,
+        email : response.data.email,
+        password : "123",
+        role : "customer",
+        username : response.data.given_name,
+        image : response.data.picture,
+        emailVerified : true,
       });
 
       const savedUser = await newUser.save();
@@ -281,6 +287,7 @@ export async function loginWithGoogle(req, res) {
           email: savedUser.email,
           role: savedUser.role,
           image: savedUser.image,
+          phone: savedUser.phone,
           emailVerified: true,
         },
         process.env.SEKRET_KEY
@@ -290,7 +297,10 @@ export async function loginWithGoogle(req, res) {
         token: token,
         user: savedUser,
       });
+
     }
+
+    
   } catch (err) {
     res.status(500).json({
       message: "Failed to login with Google",
