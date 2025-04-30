@@ -73,7 +73,8 @@ export function loginUser(req, res) {
               image: user.image,
               emailVerified: user.emailVerified,
             },
-            process.env.SEKRET_KEY
+            process.env.SEKRET_KEY,
+            { expiresIn: "1d" } // Token expires in 1 day
           );
           res.json({
             message: "Login successfull",
